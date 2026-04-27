@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ExE Store — Scripts & Bots</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #060608;
+      --surface: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --border-hover: rgba(255,255,255,0.18);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.38);
+      --accent: #7c6fff;
+      --accent-dim: rgba(124,111,255,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Canvas ── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Grid 3D ── */
+    .bg-grid {
+      position: fixed;
+      left: 50%;
+      bottom: 0;
+      width: 220%;
+      height: 50vh;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform-origin: 50% 100%;
+      transform: translateX(-50%) perspective(700px) rotateX(72deg);
+      -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 70%);
+      mask-image: linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Orbs ── */
+    .orb {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(100px);
+    }
+    .orb-1 {
+      width: 600px; height: 600px;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      background: radial-gradient(circle, rgba(124,111,255,0.07) 0%, transparent 70%);
+      animation: pulse 8s ease-in-out infinite;
+    }
+    .orb-2 {
+      width: 400px; height: 400px;
+      bottom: -100px; right: -100px;
+      background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 70%);
+      animation: pulse 11s ease-in-out infinite reverse;
+    }
+    @keyframes pulse {
+      0%,100% { transform: translateX(-50%) scale(1); opacity:1; }
+      50%      { transform: translateX(-50%) scale(1.1); opacity:0.7; }
+    }
+
+    .vignette {
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.75) 100%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* ── Header ── */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      height: 64px;
+      background: rgba(6,6,8,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .logo-img {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      object-fit: cover;
+      background: #000;
+      border: 1px solid var(--border);
+    }
+
+    .logo-text {
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    nav a:hover { color: var(--text); }
+
+    .cart-btn {
+      position: relative;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text);
+      padding: 8px 14px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .cart-btn:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--border-hover);
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -6px; right: -6px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      z-index: 10;
+      padding: 140px 32px 80px;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--accent-dim);
+      border: 1px solid rgba(124,111,255,0.25);
+      border-radius: 100px;
+      padding: 5px 14px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.04em;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, #fff 30%, rgba(124,111,255,0.8) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 32px;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+
+    .btn-primary:hover { opacity: 0.85; transform: translateY(-2px); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 28px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255,255,255,0.08);
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    /* ── Stats bar ── */
+    .stats {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 24px 32px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+
+    .stat-num {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    /* ── Products section ── */
+    .section {
+      position: relative;
+      z-index: 10;
+      padding: 64px 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.88rem;
+      margin-bottom: 32px;
+    }
+
+    /* ── Category tabs ── */
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab:hover { color: var(--text); border-color: var(--border-hover); }
+
+    .tab.active {
+      background: var(--accent-dim);
+      border-color: rgba(124,111,255,0.35);
+      color: var(--accent);
+    }
+
+    /* ── Product grid ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+
+    .card[data-cat] { display: flex; }
+    .card.hidden { display: none !important; }
+
+    .card-thumb {
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-thumb::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(6,6,8,0.8) 100%);
+    }
+
+    .thumb-fivem { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+    .thumb-mta   { background: linear-gradient(135deg, #1a1a1a 0%, #2d1b1b 50%, #4a1818 100%); }
+    .thumb-bot   { background: linear-gradient(135deg, #0d1117 0%, #1a1f3a 50%, #2d2060 100%); }
+
+    .card-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .card-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 100px;
+      width: fit-content;
+    }
+
+    .tag-fivem { background: rgba(15,52,96,0.4); color: #60a5fa; border: 1px solid rgba(96,165,250,0.2); }
+    .tag-mta   { background: rgba(74,24,24,0.4); color: #f87171; border: 1px solid rgba(248,113,113,0.2); }
+    .tag-bot   { background: rgba(45,32,96,0.4); color: #a78bfa; border: 1px solid rgba(167,139,250,0.2); }
+
+    .card-name {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .card-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+      flex: 1;
+    }
+
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-price {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .price-consult {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 400;
+      display: block;
+      margin-top: 1px;
+    }
+
+    .add-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 18px;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .add-btn:hover { opacity: 0.85; transform: scale(1.03); }
+    .add-btn.added { background: #22c55e; }
+
+    .add-btn:disabled {
+      background: rgba(255,255,255,0.06);
+      color: var(--muted);
+      cursor: not-allowed;
+      transform: none;
+      opacity: 1;
+    }
+
+    .soon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      padding: 3px 10px;
+      border-radius: 100px;
+      background: rgba(255,180,0,0.1);
+      color: #f59e0b;
+      border: 1px solid rgba(245,158,11,0.25);
+      width: fit-content;
+    }
+
+    .card.soon { opacity: 0.7; }
+    .card.soon:hover { transform: none; box-shadow: none; }
+
+    /* ── Cart sidebar ── */
+    .cart-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .cart-overlay.open { opacity: 1; pointer-events: all; }
+
+    .cart-sidebar {
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 380px;
+      max-width: 100vw;
+      background: #0d0d10;
+      border-left: 1px solid var(--border);
+      z-index: 201;
+      display: flex;
+      flex-direction: column;
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .cart-sidebar.open { transform: translateX(0); }
+
+    .cart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-head h2 { font-size: 1rem; font-weight: 700; }
+
+    .close-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      width: 32px; height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.2s;
+    }
+
+    .close-btn:hover { background: rgba(255,255,255,0.08); }
+
+    .cart-items {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cart-empty {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    .cart-empty .icon { font-size: 2.5rem; opacity: 0.4; }
+
+    .cart-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    .cart-item-icon {
+      width: 40px; height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .cart-item-info { flex: 1; }
+
+    .cart-item-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .cart-item-cat {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .remove-item {
+      background: none;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+
+    .remove-item:hover { color: #f87171; }
+
+    .cart-foot {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .cart-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .checkout-btn {
+      background: #5865F2;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+      text-decoration: none;
+    }
+
+    .checkout-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+
+    /* ── Footer ── */
+    footer {
+      position: relative;
+      z-index: 10;
+      border-top: 1px solid var(--border);
+      padding: 32px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    footer a { color: var(--muted); text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 0 16px; }
+      nav a { display: none; }
+      .hero { padding: 120px 20px 60px; }
+      .section { padding: 48px 20px; }
+      .stats { gap: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="particles"></canvas>
+  <div class="bg-grid"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="vignette"></div>
+
+  <!-- Header -->
+  <header>
+    <a class="logo" href="../index.html">
+      <img class="logo-img" src="../logo.png" alt="ExE"
+        onerror="this.style.background='#111';this.style.display='flex';this.alt='ExE'" />
+      <span class="logo-text">ExE Store</span>
+    </a>
+    <nav>
+      <a href="#produtos">Produtos</a>
+      <a href="https://discord.gg/87zZ25kYEK" target="_blank" rel="noopener noreferrer">Suporte</a>
+    </nav>
+    <button class="cart-btn" onclick="toggleCart()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-9.83-3H19a1 1 0 0 0 .96-.73l2-7A1 1 0 0 0 21 6H6.21L5.27 2H2v2h2l3.6 7.59L6.25 14c-.16.28-.25.61-.25.96C6 16.1 6.9 17 8 17h13v-2H8.42a.13.13 0 0 1-.12-.13l.03-.14.9-1.73z"/>
+      </svg>
+      Carrinho
+      <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-tag">⚡ Scripts & Bots Premium</div>
+    <h1>Leve seu servidor ao<br /><span>próximo nível</span></h1>
+    <p>Scripts exclusivos para FiveM e MTA, além de bots completos para Discord. Qualidade garantida, suporte dedicado.</p>
+    <div class="hero-btns">
+      <a class="btn-primary" href="#produtos">Ver Produtos</a>
+      <a class="btn-secondary" href="https://discord.gg/87zZ25kYEK" target="_blank" rel="noopener noreferrer">Falar no Discord</a>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">50+</div>
+      <div class="stat-label">Clientes atendidos</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Suporte no Discord</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">3</div>
+      <div class="stat-label">Categorias de produto</div>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <section class="section" id="produtos">
+    <h2 class="section-title">Produtos</h2>
+    <p class="section-sub">Selecione uma categoria para filtrar</p>
+
+    <div class="tabs">
+      <button class="tab active" onclick="filter('all', this)">Todos</button>
+      <button class="tab" onclick="filter('fivem', this)">FiveM</button>
+      <button class="tab" onclick="filter('mta', this)">MTA</button>
+      <button class="tab" onclick="filter('bot', this)">Bots Discord</button>
+    </div>
+
+    <div class="grid" id="grid">
+
+      <!-- FiveM -->
+      <div class="card soon" data-cat="fivem">
+        <div class="card-thumb thumb-fivem">🚔</div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="card-tag tag-fivem">FiveM</span>
+            <span class="soon-badge">🕐 Em breve</span>
+          </div>
+          <div class="card-name">Script de Facção Completo</div>
+          <div class="card-desc">Sistema completo de gestão de facção: hierarquia, salários, armazém de armas, logs e muito mais.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Em breve
+              <span class="price-consult">Disponível em breve</span>
+            </div>
+            <button class="add-btn" disabled>Em breve</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card soon" data-cat="fivem">
+        <div class="card-thumb thumb-fivem">🏢</div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="card-tag tag-fivem">FiveM</span>
+            <span class="soon-badge">🕐 Em breve</span>
+          </div>
+          <div class="card-name">Script de Corporação</div>
+          <div class="card-desc">Sistema de empresa/corporação com cargos, folha de pagamento, contratos e painel administrativo.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Em breve
+              <span class="price-consult">Disponível em breve</span>
+            </div>
+            <button class="add-btn" disabled>Em breve</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card soon" data-cat="fivem">
+        <div class="card-thumb thumb-fivem">🎮</div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="card-tag tag-fivem">FiveM</span>
+            <span class="soon-badge">🕐 Em breve</span>
+          </div>
+          <div class="card-name">HUD Personalizada</div>
+          <div class="card-desc">Interface do jogador totalmente customizada: vida, colete, fome, sede, dinheiro e status em tempo real.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Em breve
+              <span class="price-consult">Disponível em breve</span>
+            </div>
+            <button class="add-btn" disabled>Em breve</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card soon" data-cat="fivem">
+        <div class="card-thumb thumb-fivem">🎒</div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="card-tag tag-fivem">FiveM</span>
+            <span class="soon-badge">🕐 Em breve</span>
+          </div>
+          <div class="card-name">Sistema de Inventário</div>
+          <div class="card-desc">Inventário visual completo com slots, arrastar e soltar, itens personalizados e integração com lojas.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Em breve
+              <span class="price-consult">Disponível em breve</span>
+            </div>
+            <button class="add-btn" disabled>Em breve</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- MTA -->
+      <div class="card soon" data-cat="mta">
+        <div class="card-thumb thumb-mta">🔫</div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="card-tag tag-mta">MTA</span>
+            <span class="soon-badge">🕐 Em breve</span>
+          </div>
+          <div class="card-name">Script Facção MTA</div>
+          <div class="card-desc">Sistema de facção para MTA:SA com hierarquia de cargos, armazém, territorial e log de ações.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Em breve
+              <span class="price-consult">Disponível em breve</span>
+            </div>
+            <button class="add-btn" disabled>Em breve</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card soon" data-cat="mta">
+        <div class="card-thumb thumb-mta">🏙️</div>
+        <div class="card-body">
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="card-tag tag-mta">MTA</span>
+            <span class="soon-badge">🕐 Em breve</span>
+          </div>
+          <div class="card-name">Script Servidor RP MTA</div>
+          <div class="card-desc">Base completa para servidor de roleplay no MTA com empregos, economia, sistema de vida e muito mais.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Em breve
+              <span class="price-consult">Disponível em breve</span>
+            </div>
+            <button class="add-btn" disabled>Em breve</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bots -->
+      <div class="card" data-cat="bot">
+        <div class="card-thumb thumb-bot">🤖</div>
+        <div class="card-body">
+          <span class="card-tag tag-bot">Bot Discord</span>
+          <div class="card-name">Bot de Facção</div>
+          <div class="card-desc">Bot completo para gerenciar facção no Discord: cargos automáticos, ponto, avisos, logs e comandos slash.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Sob consulta
+              <span class="price-consult">Preço via Discord</span>
+            </div>
+            <button class="add-btn" onclick="addToCart(this, 'Bot de Facção Discord', 'Bot', '🤖')">
+              + Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-cat="bot">
+        <div class="card-thumb thumb-bot">🏦</div>
+        <div class="card-body">
+          <span class="card-tag tag-bot">Bot Discord</span>
+          <div class="card-name">Bot de Corporação</div>
+          <div class="card-desc">Bot para gestão de empresa/corporação: admissão, demissão, folha de pagamento, reuniões e relatórios.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Sob consulta
+              <span class="price-consult">Preço via Discord</span>
+            </div>
+            <button class="add-btn" onclick="addToCart(this, 'Bot de Corporação Discord', 'Bot', '🏦')">
+              + Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" data-cat="bot">
+        <div class="card-thumb thumb-bot">⚙️</div>
+        <div class="card-body">
+          <span class="card-tag tag-bot">Bot Discord</span>
+          <div class="card-name">Bot para Servidor FiveM</div>
+          <div class="card-desc">Integração entre Discord e FiveM: whitelist automática, status do servidor, comandos de admin e logs.</div>
+          <div class="card-footer">
+            <div class="card-price">
+              Sob consulta
+              <span class="price-consult">Preço via Discord</span>
+            </div>
+            <button class="add-btn" onclick="addToCart(this, 'Bot para Servidor FiveM', 'Bot', '⚙️')">
+              + Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 ExE Store — Scripts & Bots Premium &nbsp;·&nbsp;
+      <a href="https://discord.gg/87zZ25kYEK" target="_blank" rel="noopener noreferrer">Discord Loja</a> &nbsp;·&nbsp;
+      <a href="https://discord.gg/9pmAncStXa" target="_blank" rel="noopener noreferrer">Comunidade</a> &nbsp;·&nbsp;
+      <a href="https://www.instagram.com/0.psy.exe/" target="_blank" rel="noopener noreferrer">Instagram</a>
+    </p>
+  </footer>
+
+  <!-- Cart Overlay & Sidebar -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <div class="cart-sidebar" id="cartSidebar">
+    <div class="cart-head">
+      <h2>🛒 Carrinho</h2>
+      <button class="close-btn" onclick="toggleCart()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty" id="cartEmpty">
+        <span class="icon">🛒</span>
+        <span>Seu carrinho está vazio.<br/>Adicione produtos para continuar.</span>
+      </div>
+    </div>
+    <div class="cart-foot">
+      <p class="cart-note">Adicione os bots que quer, depois clique abaixo para entrar no Discord e fechar o pedido com a gente.</p>
+      <a class="checkout-btn" id="checkoutBtn" href="https://discord.gg/87zZ25kYEK" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
+        Solicitar via Discord
+      </a>
+    </div>
+  </div>
+
+  <script>
+    // ── Particles ──
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d');
+    let W, H, pts = [];
+
+    function resize() { W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+
+    class Pt {
+      constructor(rand) {
+        this.x = Math.random() * (W || 800);
+        this.y = rand ? Math.random() * (H || 600) : (H || 600) + 5;
+        this.r = Math.random() * 1.2 + 0.3;
+        this.vy = -(Math.random() * 0.3 + 0.1);
+        this.vx = (Math.random() - 0.5) * 0.12;
+        this.life = 0;
+        this.max = Math.random() * 280 + 100;
+        this.base = Math.random() * 0.3 + 0.05;
+      }
+      tick() {
+        this.x += this.vx; this.y += this.vy; this.life++;
+        if (this.life > this.max || this.y < -5) { Object.assign(this, new Pt(false)); }
+      }
+      draw() {
+        const a = this.base * (1 - this.life / this.max);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${a})`;
+        ctx.fill();
+      }
+    }
+
+    resize();
+    addEventListener('resize', resize);
+    for (let i = 0; i < 80; i++) pts.push(new Pt(true));
+    (function loop() { ctx.clearRect(0,0,W,H); pts.forEach(p=>{p.tick();p.draw();}); requestAnimationFrame(loop); })();
+
+    // ── Category filter ──
+    function filter(cat, btn) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.card').forEach(c => {
+        c.classList.toggle('hidden', cat !== 'all' && c.dataset.cat !== cat);
+      });
+    }
+
+    // ── Cart ──
+    let cart = JSON.parse(localStorage.getItem('exe_cart') || '[]');
+
+    function saveCart() { localStorage.setItem('exe_cart', JSON.stringify(cart)); }
+
+    function addToCart(btn, name, cat, icon) {
+      if (cart.find(i => i.name === name)) return;
+      cart.push({ name, cat, icon });
+      saveCart();
+      renderCart();
+      btn.classList.add('added');
+      btn.textContent = '✓ Adicionado';
+      setTimeout(() => { btn.classList.remove('added'); btn.textContent = '+ Adicionar'; }, 2000);
+    }
+
+    function removeFromCart(name) {
+      cart = cart.filter(i => i.name !== name);
+      saveCart();
+      renderCart();
+      document.querySelectorAll('.add-btn').forEach(btn => {
+        btn.classList.remove('added');
+        btn.textContent = '+ Adicionar';
+      });
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cartItems');
+      const empty = document.getElementById('cartEmpty');
+      const badge = document.getElementById('cartBadge');
+      const checkout = document.getElementById('checkoutBtn');
+
+      badge.style.display = cart.length ? 'flex' : 'none';
+      badge.textContent = cart.length;
+
+      const existing = container.querySelectorAll('.cart-item');
+      existing.forEach(e => e.remove());
+
+      if (cart.length === 0) {
+        empty.style.display = 'flex';
+      } else {
+        empty.style.display = 'none';
+        cart.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'cart-item';
+
+          const iconEl = document.createElement('div');
+          iconEl.className = 'cart-item-icon';
+          iconEl.textContent = item.icon;
+
+          const infoEl = document.createElement('div');
+          infoEl.className = 'cart-item-info';
+
+          const nameEl = document.createElement('div');
+          nameEl.className = 'cart-item-name';
+          nameEl.textContent = item.name;
+
+          const catEl = document.createElement('div');
+          catEl.className = 'cart-item-cat';
+          catEl.textContent = item.cat;
+
+          infoEl.appendChild(nameEl);
+          infoEl.appendChild(catEl);
+
+          const removeBtn = document.createElement('button');
+          removeBtn.className = 'remove-item';
+          removeBtn.textContent = '✕';
+          removeBtn.addEventListener('click', () => removeFromCart(item.name));
+
+          el.appendChild(iconEl);
+          el.appendChild(infoEl);
+          el.appendChild(removeBtn);
+          container.appendChild(el);
+        });
+      }
+    }
+
+    function toggleCart() {
+      const overlay = document.getElementById('cartOverlay');
+      const sidebar = document.getElementById('cartSidebar');
+      overlay.classList.toggle('open');
+      sidebar.classList.toggle('open');
+    }
+
+    renderCart();
+  </script>
+
+</body>
+</html>
