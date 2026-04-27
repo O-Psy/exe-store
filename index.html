@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ExE Store</title>
+  <title>.ExE</title>
+  <link rel="icon" href="logo.png" type="image/png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -20,22 +21,13 @@
       overflow: hidden;
     }
 
-    /* ── Particles canvas ── */
-    #particles {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
+    /* ── Background ── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
-    /* ── Perspective grid ── */
     .bg-grid {
       position: fixed;
-      left: 50%;
-      bottom: 0;
-      transform: translateX(-50%);
-      width: 200%;
-      height: 55vh;
+      left: 50%; bottom: 0;
+      width: 200%; height: 55vh;
       background-image:
         linear-gradient(rgba(255,255,255,0.055) 1px, transparent 1px),
         linear-gradient(90deg, rgba(255,255,255,0.055) 1px, transparent 1px);
@@ -44,232 +36,230 @@
       transform: translateX(-50%) perspective(700px) rotateX(72deg);
       -webkit-mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 75%);
       mask-image: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 75%);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
-    /* ── Glow orbs ── */
-    .orb {
-      position: fixed;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 0;
-      filter: blur(90px);
-    }
-
+    .orb { position: fixed; border-radius: 50%; pointer-events: none; z-index: 0; filter: blur(90px); }
     .orb-1 {
-      width: 500px;
-      height: 500px;
-      top: -180px;
-      left: 50%;
+      width: 500px; height: 500px; top: -180px; left: 50%;
       transform: translateX(-50%);
       background: radial-gradient(circle, rgba(180,180,255,0.07) 0%, transparent 70%);
       animation: orbPulse 7s ease-in-out infinite;
     }
-
     .orb-2 {
-      width: 350px;
-      height: 350px;
-      bottom: -100px;
-      left: -80px;
+      width: 350px; height: 350px; bottom: -100px; left: -80px;
       background: radial-gradient(circle, rgba(255,255,255,0.04) 0%, transparent 70%);
       animation: orbPulse 9s ease-in-out infinite reverse;
     }
-
     .orb-3 {
-      width: 280px;
-      height: 280px;
-      bottom: -60px;
-      right: -60px;
+      width: 280px; height: 280px; bottom: -60px; right: -60px;
       background: radial-gradient(circle, rgba(100,120,255,0.05) 0%, transparent 70%);
-      animation: orbPulse 11s ease-in-out infinite;
-      animation-delay: -3s;
+      animation: orbPulse 11s ease-in-out infinite; animation-delay: -3s;
     }
-
     @keyframes orbPulse {
-      0%, 100% { transform: scale(1) translateY(0); opacity: 1; }
-      50%       { transform: scale(1.12) translateY(-20px); opacity: 0.7; }
+      0%,100% { transform: scale(1) translateY(0); opacity: 1; }
+      50%      { transform: scale(1.12) translateY(-20px); opacity: 0.7; }
     }
-
-    /* ── Vignette ── */
     .vignette {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
-
-    /* ── Scanline noise ── */
     .noise {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
-      opacity: 0.025;
-      pointer-events: none;
-      z-index: 1;
+      background-size: 180px 180px; opacity: 0.025; pointer-events: none; z-index: 1;
     }
 
-    /* ── Content ── */
+    /* ── Container ── */
     .container {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 28px;
-      padding: 40px 24px;
-      width: 100%;
-      max-width: 480px;
+      position: relative; z-index: 10;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 16px; padding: 40px 24px;
+      width: 100%; max-width: 400px;
     }
 
-    /* Logo */
-    .logo-wrap {
-      width: 115px;
-      height: 115px;
-      border-radius: 28px;
+    /* ── Avatar ── */
+    .avatar-wrap {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.15);
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.04), 0 0 40px rgba(255,255,255,0.06);
       overflow: hidden;
-      border: 1px solid rgba(255,255,255,0.1);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,0.04),
-        0 8px 32px rgba(0,0,0,0.6),
-        0 0 60px rgba(255,255,255,0.04);
       background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .logo-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .logo-fallback {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
-
-    .logo-fallback .exe {
-      font-size: 2rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1;
-    }
-
-    .logo-fallback .community {
-      font-size: 0.45rem;
-      font-weight: 600;
-      letter-spacing: 0.25em;
-      color: rgba(255,255,255,0.6);
-    }
-
-    /* Header */
-    .header {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .header h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-shadow: 0 0 30px rgba(255,255,255,0.15);
-    }
-
-    .header p {
-      font-size: 0.88rem;
-      color: rgba(255,255,255,0.38);
-      letter-spacing: 0.02em;
-    }
-
-    /* Links */
-    .links {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      width: 100%;
-    }
-
-    .link-btn {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 20px;
-      background: rgba(255,255,255,0.04);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      color: #fff;
-      text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 600;
-      letter-spacing: 0.02em;
-      transition: background 0.2s, border-color 0.2s, transform 0.15s, box-shadow 0.2s;
-    }
-
-    .link-btn:hover {
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.18);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
-    }
-
-    .link-btn:active { transform: translateY(0); }
-
-    .link-btn .icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
     }
+    .avatar-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .avatar-fallback { font-size: 1.4rem; font-weight: 700; }
 
-    .link-btn .icon svg { width: 20px; height: 20px; }
+    /* ── Identity ── */
+    .identity { text-align: center; display: flex; flex-direction: column; gap: 6px; }
+    .identity h1 { font-size: 1.35rem; font-weight: 700; letter-spacing: 0.04em; }
 
-    .link-btn.store     .icon { background: rgba(255,255,255,0.08); }
-    .link-btn.store     .icon svg { fill: #fff; }
-    .link-btn.discord   .icon { background: rgba(88,101,242,0.2); }
-    .link-btn.discord   .icon svg { fill: #5865F2; }
-    .link-btn.community .icon { background: rgba(88,101,242,0.12); }
-    .link-btn.community .icon svg { fill: #7289da; }
-    .link-btn.instagram .icon { background: rgba(225,48,108,0.14); }
-    .link-btn.instagram .icon svg { fill: url(#insta-grad); }
+    /* ── Glitch ── */
+    .glitch {
+      position: relative;
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+    }
+    .glitch::before,
+    .glitch::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .glitch::before {
+      color: #0ff;
+      animation: glitch1 3s infinite;
+      clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    }
+    .glitch::after {
+      color: #f0f;
+      animation: glitch2 3s infinite;
+      clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    }
+    @keyframes glitch1 {
+      0%,90%,100% { transform: translate(0); opacity: 0; }
+      91%          { transform: translate(-2px, 1px); opacity: 0.8; }
+      93%          { transform: translate(2px, -1px); opacity: 0.8; }
+      95%          { transform: translate(-1px, 0); opacity: 0.8; }
+      97%          { transform: translate(0); opacity: 0; }
+    }
+    @keyframes glitch2 {
+      0%,90%,100% { transform: translate(0); opacity: 0; }
+      92%          { transform: translate(2px, 1px); opacity: 0.8; }
+      94%          { transform: translate(-2px, -1px); opacity: 0.8; }
+      96%          { transform: translate(1px, 0); opacity: 0.8; }
+      98%          { transform: translate(0); opacity: 0; }
+    }
+    .meta {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; font-size: 0.8rem; color: rgba(255,255,255,0.4);
+    }
+    .meta .dot { opacity: 0.3; }
+    .location { display: flex; align-items: center; gap: 4px; }
 
-    .label { flex: 1; }
-
-    .label span {
+    /* ── Discord Presence ── */
+    .presence-card {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      min-height: 64px;
+    }
+    .presence-avatar-wrap { position: relative; flex-shrink: 0; }
+    .presence-avatar {
+      width: 54px; height: 54px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: rgba(255,255,255,0.08);
       display: block;
-      font-size: 0.74rem;
-      color: rgba(255,255,255,0.32);
-      font-weight: 400;
-      margin-top: 2px;
+    }
+    .presence-avatar-placeholder {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+    }
+    .status-dot {
+      position: absolute; bottom: 1px; right: 1px;
+      width: 15px; height: 15px; border-radius: 50%;
+      border: 2px solid #060608;
+      background: #747F8D;
+    }
+    .status-dot.online  { background: #57F287; }
+    .status-dot.idle    { background: #FEE75C; }
+    .status-dot.dnd     { background: #ED4245; }
+    .status-dot.offline { background: #747F8D; }
+
+    .presence-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+    .presence-name {
+      font-size: 0.95rem; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .presence-tag {
+      font-size: 0.72rem; color: rgba(255,255,255,0.3); font-weight: 400;
+    }
+    .presence-badges {
+      display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+    }
+    .presence-badge {
+      width: 18px; height: 18px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 3px rgba(255,255,255,0.2));
+    }
+    .presence-activity {
+      font-size: 0.74rem; color: rgba(255,255,255,0.35);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .presence-activity::before {
+      content: ''; width: 6px; height: 6px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); flex-shrink: 0;
+    }
+    .presence-platform {
+      display: flex; align-items: center; gap: 4px;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.06);
+      padding: 3px 8px; border-radius: 100px;
+      border: 1px solid rgba(255,255,255,0.07);
+      flex-shrink: 0; align-self: flex-start;
     }
 
-    .arrow {
-      color: rgba(255,255,255,0.22);
-      font-size: 1.1rem;
-      transition: color 0.2s;
+    /* ── Icon Links ── */
+    .icon-row {
+      display: flex; gap: 12px; align-items: center; justify-content: center;
+      flex-wrap: wrap;
     }
-
-    .link-btn:hover .arrow { color: rgba(255,255,255,0.55); }
-
-    .footer {
-      font-size: 0.74rem;
-      color: rgba(255,255,255,0.14);
-      letter-spacing: 0.05em;
+    .icon-link {
+      width: 52px; height: 52px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; color: #fff;
+      transition: background 0.2s, border-color 0.2s, transform 0.15s;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
     }
+    .icon-link:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.18);
+      transform: translateY(-3px);
+    }
+    .icon-link svg { width: 22px; height: 22px; }
+    .icon-link .tooltip {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.85);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      padding: 4px 10px;
+      font-size: 0.7rem; font-weight: 600;
+      white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.15s;
+    }
+    .icon-link { position: relative; }
+    .icon-link:hover .tooltip { opacity: 1; }
+
+
+    /* ── Views ── */
+    .views {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 0.75rem; color: rgba(255,255,255,0.25);
+      font-weight: 500; letter-spacing: 0.03em;
+    }
+    .views svg { width: 14px; height: 14px; opacity: 0.5; }
 
     svg.defs { position: absolute; width: 0; height: 0; }
   </style>
@@ -280,15 +270,12 @@
     <defs>
       <linearGradient id="insta-grad" x1="0%" y1="100%" x2="100%" y2="0%">
         <stop offset="0%"   style="stop-color:#f09433"/>
-        <stop offset="25%"  style="stop-color:#e6683c"/>
         <stop offset="50%"  style="stop-color:#dc2743"/>
-        <stop offset="75%"  style="stop-color:#cc2366"/>
         <stop offset="100%" style="stop-color:#bc1888"/>
       </linearGradient>
     </defs>
   </svg>
 
-  <!-- Background layers -->
   <canvas id="particles"></canvas>
   <div class="bg-grid"></div>
   <div class="orb orb-1"></div>
@@ -299,108 +286,136 @@
 
   <div class="container">
 
-    <div class="logo-wrap">
-      <img
-        src="logo.png"
-        alt="ExE Logo"
-        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
-      />
-      <div class="logo-fallback">
-        <span class="exe">ExE</span>
-        <span class="community">COMMUNITY</span>
+    <!-- Avatar -->
+    <div class="avatar-wrap">
+      <img src="logo.png" alt="ExE"
+        onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+      <span class="avatar-fallback" style="display:none">ExE</span>
+    </div>
+
+    <!-- Identity -->
+    <div class="identity">
+      <h1 class="glitch" data-text=".ExE">.ExE</h1>
+      <div class="meta">
+        <span class="handle">@0.psy.exe</span>
+        <span class="dot">·</span>
+        <span class="location">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+          </svg>
+          BR
+        </span>
       </div>
     </div>
 
-    <div class="header">
-      <h1>ExE Store</h1>
-      <p>Tudo que você precisa, num só lugar.</p>
+    <!-- Discord Presence -->
+    <div class="presence-card" id="presence">
+      <div class="presence-avatar-wrap">
+        <div class="presence-avatar-placeholder" id="presenceAvatarWrap">🎮</div>
+        <div class="status-dot offline" id="statusDot"></div>
+      </div>
+      <div class="presence-info">
+        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+          <div class="presence-name" id="presenceName">Carregando...</div>
+        </div>
+        <div class="presence-badges" id="presenceBadges"></div>
+        <div class="presence-activity" id="presenceActivity">Conectando ao Discord...</div>
+      </div>
+      <div class="presence-platform">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="#5865F2">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
+        Discord
+      </div>
     </div>
 
-    <div class="links">
+    <!-- Icon Links -->
+    <div class="icon-row">
 
-      <a class="link-btn store" href="store/index.html" target="_blank" rel="noopener noreferrer">
-        <div class="icon">
-          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v10c0 .55-.45 1-1 1zM8 9h8v2H8zm0 4h5v2H8z"/></svg>
-        </div>
-        <div class="label">
-          Loja ExE Store
-          <span>Acesse nossos produtos</span>
-        </div>
-        <span class="arrow">›</span>
+      <a class="icon-link" href="store/index.html" target="_blank" rel="noopener noreferrer">
+        <span class="tooltip">Loja</span>
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-1 14H5c-.55 0-1-.45-1-1V7c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v10c0 .55-.45 1-1 1zM8 9h8v2H8zm0 4h5v2H8z"/>
+        </svg>
       </a>
 
-      <a class="link-btn discord" href="https://discord.gg/87zZ25kYEK" target="_blank" rel="noopener noreferrer">
-        <div class="icon">
-          <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        </div>
-        <div class="label">
-          Discord — ExE Store
-          <span>Suporte e novidades da loja</span>
-        </div>
-        <span class="arrow">›</span>
+      <a class="icon-link" href="https://discord.gg/87zZ25kYEK" target="_blank" rel="noopener noreferrer" style="--c: rgba(88,101,242,0.15);">
+        <span class="tooltip">ExE Store DC</span>
+        <svg viewBox="0 0 24 24" fill="#5865F2">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
       </a>
 
-      <a class="link-btn community" href="https://discord.gg/9pmAncStXa" target="_blank" rel="noopener noreferrer">
-        <div class="icon">
-          <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/></svg>
-        </div>
-        <div class="label">
-          Discord — ExE Community
-          <span>Entre na comunidade</span>
-        </div>
-        <span class="arrow">›</span>
+      <a class="icon-link" href="https://discord.gg/9pmAncStXa" target="_blank" rel="noopener noreferrer">
+        <span class="tooltip">ExE Community</span>
+        <svg viewBox="0 0 24 24" fill="#7289da">
+          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057c.002.022.015.043.03.056a19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03z"/>
+        </svg>
       </a>
 
-      <a class="link-btn instagram" href="https://www.instagram.com/0.psy.exe/" target="_blank" rel="noopener noreferrer">
-        <div class="icon">
-          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        </div>
-        <div class="label">
-          Instagram
-          <span>@0.psy.exe</span>
-        </div>
-        <span class="arrow">›</span>
+      <a class="icon-link" href="https://www.instagram.com/0.psy.exe/" target="_blank" rel="noopener noreferrer">
+        <span class="tooltip">Instagram</span>
+        <svg viewBox="0 0 24 24" fill="url(#insta-grad)">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+        </svg>
       </a>
 
     </div>
 
-    <p class="footer">© 2025 ExE Store</p>
+
+    <!-- Views -->
+    <div class="views">
+      <svg viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+      </svg>
+      <span id="viewCount">0</span> visitas
+    </div>
 
   </div>
 
   <script>
+    // ── Tab title typewriter ──
+    (function() {
+      const phrase = '.ExE';
+      let ci = 0, deleting = false;
+      function tick() {
+        document.title = phrase.slice(0, ci);
+        if (!deleting && ci >= phrase.length) { deleting = true; setTimeout(tick, 4000); return; }
+        if (deleting && ci <= 0)              { deleting = false; setTimeout(tick, 2000); return; }
+        deleting ? ci-- : ci++;
+        setTimeout(tick, deleting ? 350 : 420);
+      }
+      tick();
+    })();
+
+    // ── Particles ──
     const canvas = document.getElementById('particles');
     const ctx = canvas.getContext('2d');
     let W, H, particles = [];
 
     function resize() {
-      W = canvas.width  = window.innerWidth;
+      W = canvas.width = window.innerWidth;
       H = canvas.height = window.innerHeight;
     }
 
     class Particle {
-      constructor(randomY) {
-        this.init(randomY);
-      }
+      constructor(randomY) { this.init(randomY); }
       init(randomY) {
-        this.x    = Math.random() * W;
-        this.y    = randomY ? Math.random() * H : H + 5;
-        this.r    = Math.random() * 1.2 + 0.3;
-        this.vy   = -(Math.random() * 0.35 + 0.12);
-        this.vx   = (Math.random() - 0.5) * 0.15;
+        this.x = Math.random() * W;
+        this.y = randomY ? Math.random() * H : H + 5;
+        this.r = Math.random() * 1.2 + 0.3;
+        this.vy = -(Math.random() * 0.35 + 0.12);
+        this.vx = (Math.random() - 0.5) * 0.15;
         this.life = 0;
-        this.max  = Math.random() * 260 + 120;
+        this.max = Math.random() * 260 + 120;
         this.base = Math.random() * 0.35 + 0.05;
       }
       update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        this.life++;
+        this.x += this.vx; this.y += this.vy; this.life++;
         if (this.life > this.max || this.y < -5) this.init(false);
       }
       draw() {
-        const t = this.life / this.max;
-        const a = this.base * (1 - t);
+        const a = this.base * (1 - this.life / this.max);
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(255,255,255,${a})`;
@@ -408,20 +423,109 @@
       }
     }
 
-    function boot() {
-      resize();
-      window.addEventListener('resize', resize);
-      for (let i = 0; i < 70; i++) particles.push(new Particle(true));
-      loop();
-    }
-
-    function loop() {
+    resize();
+    window.addEventListener('resize', resize);
+    for (let i = 0; i < 70; i++) particles.push(new Particle(true));
+    (function loop() {
       ctx.clearRect(0, 0, W, H);
       particles.forEach(p => { p.update(); p.draw(); });
       requestAnimationFrame(loop);
+    })();
+
+    // ── Discord Presence (Lanyard) ──
+    const DISCORD_ID = '365604397587103747';
+    const STATUS_MAP = { online: 'Online', idle: 'Ausente', dnd: 'Não perturbe', offline: 'Offline' };
+    const BADGE_MAP = [
+      { flag: 1,       url: 'https://cdn.discordapp.com/badge-icons/5e74e9b61934fc1f67c65515d1f7e60d.png', label: 'Discord Staff' },
+      { flag: 2,       url: 'https://cdn.discordapp.com/badge-icons/3f9748e53446a137a052f3454e2de41e.png', label: 'Partner' },
+      { flag: 4,       url: 'https://cdn.discordapp.com/badge-icons/bf01d1073931f921909045f3a39fd264.png', label: 'HypeSquad Events' },
+      { flag: 8,       url: 'https://cdn.discordapp.com/badge-icons/2717692c7dca7289b35297368a940dd0.png', label: 'Bug Hunter' },
+      { flag: 64,      url: 'https://cdn.discordapp.com/badge-icons/8a88d63823d8a71cd5e390baa45efa02.png', label: 'HypeSquad Bravery' },
+      { flag: 128,     url: 'https://cdn.discordapp.com/badge-icons/011940fd013082d85d96680aeed53e2f.png', label: 'HypeSquad Brilliance' },
+      { flag: 256,     url: 'https://cdn.discordapp.com/badge-icons/3aa41de486fa12454c3761e8e223442e.png', label: 'HypeSquad Balance' },
+      { flag: 512,     url: 'https://cdn.discordapp.com/badge-icons/7060786766c9c840eb3019e725d2b358.png', label: 'Early Supporter' },
+      { flag: 16384,   url: 'https://cdn.discordapp.com/badge-icons/848f79194d4be5ff5f81505cbd0ce1e6.png', label: 'Bug Hunter Lv2' },
+      { flag: 131072,  url: 'https://cdn.discordapp.com/badge-icons/6df5892e0f35b051f8b61eace34f4967.png', label: 'Verified Bot Dev' },
+      { flag: 262144,  url: 'https://cdn.discordapp.com/badge-icons/53244c8ac4b33b34873baff800d7b5e5.png', label: 'Moderador Certificado' },
+      { flag: 4194304, url: 'https://cdn.discordapp.com/badge-icons/6bdc42827a38498929a4920da12695d9.png', label: 'Active Developer' },
+    ];
+
+    // Badges fixas (Lanyard não as retorna todas)
+    const MANUAL_BADGES = [
+      { url: 'https://cdn.discordapp.com/badge-icons/2ba85e8026a8614b640c2837bcdfe21b.png', label: 'Nitro' },
+      { url: 'https://cdn.discordapp.com/badge-icons/011940fd013082d85d96680aeed53e2f.png', label: 'HypeSquad Brilliance' },
+      { url: 'https://cdn.discordapp.com/badge-icons/51040c70d4f20a921ad6674ff86fc95c.png', label: 'Server Booster' },
+      { url: 'https://cdn.discordapp.com/badge-icons/fd272aa0f7bce43bb0e2d5c8d1d9dab7.png', label: 'Completou Missão' },
+      { url: 'https://cdn.discordapp.com/badge-icons/e4b45f4ebab48bdb71ea6cd08e898ed7.png', label: 'Aprendiz' },
+    ];
+
+    let presenceLoaded = false;
+
+    async function fetchPresence() {
+      try {
+        const res = await fetch(`https://api.lanyard.rest/v1/users/${DISCORD_ID}`);
+        const { data } = await res.json();
+        const user = data.discord_user;
+
+        document.getElementById('statusDot').className = `status-dot ${data.discord_status}`;
+        document.getElementById('presenceName').textContent = user.username;
+
+        // Avatar
+        if (user.avatar && !presenceLoaded) {
+          presenceLoaded = true;
+          const wrap = document.getElementById('presenceAvatarWrap');
+          const img = document.createElement('img');
+          img.className = 'presence-avatar';
+          img.src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=128`;
+          img.alt = user.username;
+          wrap.replaceWith(img);
+          img.id = 'presenceAvatarWrap';
+        }
+
+        // Badges
+        const badgesEl = document.getElementById('presenceBadges');
+        badgesEl.innerHTML = '';
+        const flags = user.public_flags || 0;
+
+        const addBadge = (url, label) => {
+          const img = document.createElement('img');
+          img.className = 'presence-badge';
+          img.src = url; img.title = label; img.alt = label;
+          img.onerror = () => { img.style.display = 'none'; };
+          badgesEl.appendChild(img);
+        };
+
+        // Badges manuais (Nitro, Booster, etc.)
+        MANUAL_BADGES.forEach(b => addBadge(b.url, b.label));
+
+        // Badges do public_flags (ignora flag 128 — Brilliance já está em MANUAL_BADGES)
+        BADGE_MAP.forEach(b => { if ((flags & b.flag) && b.flag !== 128) addBadge(b.url, b.label); });
+
+        // Activity
+        const act = data.activities?.find(a => a.type === 0 || a.type === 2);
+        const actEl = document.getElementById('presenceActivity');
+        if (act?.type === 2) {
+          actEl.textContent = `ouvindo ${act.details || act.name}`;
+        } else if (act?.type === 0) {
+          actEl.textContent = `jogando ${act.name}`;
+        } else {
+          actEl.textContent = STATUS_MAP[data.discord_status] || 'Offline';
+        }
+      } catch {
+        document.getElementById('presenceName').textContent = '0.psy.exe';
+        document.getElementById('presenceActivity').textContent = 'ExE Store';
+      }
     }
 
-    boot();
+    fetchPresence();
+    setInterval(fetchPresence, 30000);
+
+
+    // ── View Counter ──
+    const key = 'exe_views';
+    const views = parseInt(localStorage.getItem(key) || '0') + 1;
+    localStorage.setItem(key, String(views));
+    document.getElementById('viewCount').textContent = views.toLocaleString('pt-BR');
   </script>
 
 </body>
