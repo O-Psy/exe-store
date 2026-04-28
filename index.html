@@ -580,16 +580,16 @@
 
     // ── View Counter ──
     (async function() {
-      const countEl = document.getElementById('viewCount');
+      const countEl    = document.getElementById('viewCount');
       const SESSION_KEY = 'exe_counted';
-      const NAMESPACE   = 'exe-store-site';
-      const HIT_URL     = `https://api.countapi.xyz/hit/${NAMESPACE}/visits`;
-      const GET_URL     = `https://api.countapi.xyz/get/${NAMESPACE}/visits`;
+      const BASE        = 'https://counterapi.dev/api/exe-store-site/visits';
       try {
         const alreadyCounted = sessionStorage.getItem(SESSION_KEY);
-        const res  = await fetch(alreadyCounted ? GET_URL : HIT_URL);
-        const { value } = await res.json();
-        countEl.textContent = typeof value === 'number' ? value.toLocaleString('pt-BR') : '—';
+        const url = alreadyCounted ? BASE : `${BASE}/up`;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error();
+        const { count } = await res.json();
+        countEl.textContent = typeof count === 'number' ? count.toLocaleString('pt-BR') : '—';
         if (!alreadyCounted) sessionStorage.setItem(SESSION_KEY, '1');
       } catch {
         countEl.textContent = '—';
