@@ -578,18 +578,24 @@
     setInterval(fetchPresence, 30000);
 
 
-    // ── View Counter ──
-    (function() {
+    // ── View Counter (Firebase) ──
+    (async function() {
       const countEl = document.getElementById('viewCount');
-      const LS_KEY  = 'exe_visits';
       const SS_KEY  = 'exe_session';
-      let count = parseInt(localStorage.getItem(LS_KEY) || '0');
-      if (!sessionStorage.getItem(SS_KEY)) {
-        count++;
-        localStorage.setItem(LS_KEY, String(count));
-        sessionStorage.setItem(SS_KEY, '1');
+      const DB      = 'https://exe-site-default-rtdb.firebaseio.com/visits.json';
+      try {
+        const current = await fetch(DB).then(r => r.json()).then(v => (typeof v === 'number' ? v : 0));
+        if (!sessionStorage.getItem(SS_KEY)) {
+          const next = current + 1;
+          await fetch(DB, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(next) });
+          sessionStorage.setItem(SS_KEY, '1');
+          countEl.textContent = next.toLocaleString('pt-BR');
+        } else {
+          countEl.textContent = current.toLocaleString('pt-BR');
+        }
+      } catch {
+        countEl.textContent = '—';
       }
-      countEl.textContent = count.toLocaleString('pt-BR');
     })();
   </script>
 
