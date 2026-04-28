@@ -579,21 +579,17 @@
 
 
     // ── View Counter ──
-    (async function() {
-      const countEl    = document.getElementById('viewCount');
-      const SESSION_KEY = 'exe_counted';
-      const BASE        = 'https://counterapi.dev/api/exe-store-site/visits';
-      try {
-        const alreadyCounted = sessionStorage.getItem(SESSION_KEY);
-        const url = alreadyCounted ? BASE : `${BASE}/up`;
-        const res = await fetch(url);
-        if (!res.ok) throw new Error();
-        const { count } = await res.json();
-        countEl.textContent = typeof count === 'number' ? count.toLocaleString('pt-BR') : '—';
-        if (!alreadyCounted) sessionStorage.setItem(SESSION_KEY, '1');
-      } catch {
-        countEl.textContent = '—';
+    (function() {
+      const countEl = document.getElementById('viewCount');
+      const LS_KEY  = 'exe_visits';
+      const SS_KEY  = 'exe_session';
+      let count = parseInt(localStorage.getItem(LS_KEY) || '0');
+      if (!sessionStorage.getItem(SS_KEY)) {
+        count++;
+        localStorage.setItem(LS_KEY, String(count));
+        sessionStorage.setItem(SS_KEY, '1');
       }
+      countEl.textContent = count.toLocaleString('pt-BR');
     })();
   </script>
 
